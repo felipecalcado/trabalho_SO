@@ -94,46 +94,71 @@ public class Executar {
             return false;
         }
     }
-    //Examinar a FE e encaminhar os processos às suas devidas listas
-
+	
+    //Examinar a FE (fila de entrada) e encaminhar os processos às suas devidas listas
     public void examinarFE() {
+		// se FE não está vazia
         if (!fe.lista.isEmpty()) {
+			// enquanto FE não estiver vazia
             while (!fe.lista.isEmpty()) {
-                //Adiciona processo à Lista de processos de Tempo Real
+                // adiciona processo à Lista de processos de Tempo Real
+				// se o primeiro da FE tiver prioridade máxima (0: tempo real, esses processos são executados imediatamente)
                 if (fe.lista.getFirst().getPrioridade() == 0) {
                     Processo aux = new Processo();
+					// remove processo de FE, e o guarda em aux
                     aux = fe.removerProcesso();
+					// seta memoria usada pelo processo
                     aux.memUsada = "Memória 1";
+					// tenta adicionar processo a memoria 1
                     if (mem1.addElemento(aux)) {
+						// se conseguir, processo vai pra fila de submissao (TODO: ver a diferenca entre ftr e fu)
                         ftr.adicionarProcesso(aux);
                     } else {
+						// se não, tenta alocar na memoria 2
                         aux.memUsada = "Memória 2";
                         if (mem2.addElemento(aux)) {
                             ftr.adicionarProcesso(aux);
                         } else {
+							// se chegou aqui, significa q nao há espaço nas memorias 1 e 2
+							// verifica se lista de submissao FU esta vazia
                             if (!fu.lista.isEmpty()) {
+								// se nao estiver
                                 aux.memUsada = "Memória 1";
+								// enquanto memoria 1 nao aceitar o processo aux
                                 while (!mem1.addElemento(aux)) {
+									// adiciona processo da lista de submissao fu na lista de suspensao fSusp
                                     fSusp.adicionarProcesso(fu.removerProcesso());
+									// remove o ultimo elemento da fila de suspensao (fSusp) da memoria 1
                                     mem1.removerElemento(fSusp.lista.getLast());
                                 }
                             }
                         }
                     }
-                } //Adiciona processo à Lista de processos do Usuário
+                }
+				// se prioridade do processo nao for maxima (0), adiciona processo à Lista de processos do Usuário
                 else {
                     int i = 0;
                     Processo aux = new Processo();
+					// itera em toda lista de suspensao
                     while (i < fSusp.lista.size()) {
+						// valida quantidade de recursos no processo
                         if (controle.testarRecursos(aux)) {
+							// processo sai da lista de suspenso (aux)
                             aux = fSusp.lista.get(i);
+							// seta memoria usada pra 1
                             aux.memUsada = "Memória 1";
+							// tenta alocar processo (aux) na memoria 1
                             if (mem1.addElemento(aux)) {
-                                fSusp.removerProcesso();
+								// se conseguir, remove processo da lista de suspenso
+                                aux = fSusp.removerProcesso();
+								// adiciona na lista de submissao (fu)
                                 fu.adicionarProcesso(aux);
-                            } else {
+                            }
+							// nao conseguiu alocar na memoria 1, tenta na memoria 2
+							else {
                                 aux.memUsada = "Memória 2";
                                 if (mem2.addElemento(aux)) {
+									// remove processo da lista de suspensao e grava em aux (TODO: verificar linha 153)
                                     aux = fSusp.removerProcesso();
                                     fu.adicionarProcesso(aux);
                                 }
@@ -142,7 +167,10 @@ public class Executar {
                         }
                         i++;
                     }
+					// acabou de varrer a lista de suspensao
+					// aux recebe processo da lista de entrada (fe)
                     aux = fe.removerProcesso();
+					// mesmo processo acima, mas agora o processe vem da lista de entrada (TODO: pq?)
                     if (controle.testarRecursos(aux)) {
                         aux.memUsada = "Memória 1";
                         if (mem1.addElemento(aux)) {

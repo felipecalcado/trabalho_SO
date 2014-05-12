@@ -11,11 +11,11 @@ package escalonadordeprocessos;
 // Classe para controle de uso dos recursos
 public class Controle_Tamanho {
 
-    static int max_memoria = 1024;  // máximo de memória
-    static int max_impressora = 2;  // máximo de impressoras
-    static int max_scanner = 1;     // máximo de scanners
-    static int max_modem = 1;       // máximo de modems 
-    static int max_cd = 2;          // máximo de cds
+    static int max_memoria = 1024;  // máximo de memória - C
+    static int max_impressora = 2;  // máximo de impressoras - C
+    static int max_scanner = 1;     // máximo de scanners - C
+    static int max_modem = 1;       // máximo de modems - C
+    static int max_cd = 2;          // máximo de cds - C
     private int memoria = 0;
     private int impressora = 0;
     private int scanner = 0;
@@ -126,6 +126,12 @@ public class Controle_Tamanho {
         }
     }
 
+	/**
+	 * Valida quantidade de recursos no processo
+	 * Para cada recurso, verifica se a quantidade do recurso no processo estourou limite estabelecido
+	 * @param Processo m
+	 * @return boolean
+	 */
     public boolean testarRecursos(Processo m) {
         if (!(m.getCD() + this.cd > max_cd)) {
             if (!(m.getImpressora() + this.impressora > max_impressora)) {
