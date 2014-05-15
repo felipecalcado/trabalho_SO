@@ -28,8 +28,13 @@ import javax.swing.JFileChooser;
 public class EscalonadorDeProcessos_SO1View extends FrameView {
 
     Executar exec = new Executar();
-    Fila aux = new Fila(); //Lista para não ficar precisando ler o arquivo texto todo o tempo
-    Controle_Tamanho controle = new Controle_Tamanho(); //Controle dos recursos disponíveis
+	
+	// arquivo é lido apenas uma vez e é guardado na lista auxiliar (aux)
+    Fila aux = new Fila(); 
+	
+	// Controle dos recursos disponíveis
+    ControleRecursos controle = new ControleRecursos(); 
+	
     Processo auxiliar = new Processo();
     String nome1;
     String nome2;
@@ -41,12 +46,15 @@ public class EscalonadorDeProcessos_SO1View extends FrameView {
     boolean normal4;
     boolean examinaFE = false;
 
+	// inicio da aplicacao
     public EscalonadorDeProcessos_SO1View(SingleFrameApplication app) {
         super(app);
 
+		// tenta ler o arquivo de entrada
         try {
             BufferedReader in = null;
-            File dir = new File(System.getProperty("user.dir"));// diretório corrente
+			// diretório corrente
+            File dir = new File(System.getProperty("user.dir"));
             JFileChooser fc = new JFileChooser(dir);
             if (JFileChooser.APPROVE_OPTION == fc.showOpenDialog(null)) {
                 File f = fc.getSelectedFile();
@@ -58,7 +66,7 @@ public class EscalonadorDeProcessos_SO1View extends FrameView {
             String linha = in.readLine();
             int i = 1;
             while (!linha.isEmpty()) {
-                //Instancia processo
+                // monta o processo a partir do arquivo de entrada
                 Processo p = new Processo();
                 p.setNome(linha, i);
                 linha = p.setTempChegada(linha);
@@ -71,24 +79,34 @@ public class EscalonadorDeProcessos_SO1View extends FrameView {
                 p.setCD(linha);
                 p.setCPU(0);
 
-                //Adiciona processo à Lista de aux
+                // adiciona processo à lista auxiliar
                 if (aux.lista.size() > 1) {
+					// se esse processo tem o mesmo tempo de chegada do ultimo da lista auxiliar
                     if (p.getTempChegada() == aux.lista.getLast().getTempChegada()) {
+						// se esse processo tem prioridade menor (que, nesse caso, significa ter maior prioridade) que o ultimo da lista
                         if (p.getPrioridade() < aux.lista.getLast().getPrioridade()) {
+							// adiciona esse processo na frente do ultimo na lista auxiliar
                             Processo aux1 = new Processo();
                             aux1 = aux.lista.getLast();
                             aux.lista.removeLast();
                             aux.lista.add(p);
                             aux.lista.add(aux1);
                         } else {
+							// se tem prioridade maior (menor), adiciona normalmente
                             aux.adicionarProcesso(p);
                         }
                     } else {
+						// se o tempo de chegada é diferente, adiciona normalmente
                         aux.adicionarProcesso(p);
                     }
                 } else {
+					// se lista esta vazia, adiciona normalmente
                     aux.adicionarProcesso(p);
                 }
+				
+				// detalhes sobre os processos trazidos do arquivo
+//				if(!in.ready())
+//					System.out.println(aux.toString());
 
 
                 //Ler próxima linha do arquivo texto
@@ -104,7 +122,7 @@ public class EscalonadorDeProcessos_SO1View extends FrameView {
             System.exit(0);
         }
 
-        //Processo auxiliar (Flag final)
+        //Processo auxiliar (Flag final), adiciona ao final da lista auxiliar
         Processo p = new Processo();
         p.setNome("Fim", 1);
         p.setTempChegada("100000, ");
@@ -119,8 +137,9 @@ public class EscalonadorDeProcessos_SO1View extends FrameView {
         aux.adicionarProcesso(p);
         auxiliar = p;
 
+		// monta view da aplicacao
         initComponents();
-        mainPanel.setSize(1208, 574);
+        mainPanel.setSize(800, 574);
         mainPanel.setPreferredSize(mainPanel.getSize());
 
         jTextField4.setText("0");
@@ -948,6 +967,7 @@ public class EscalonadorDeProcessos_SO1View extends FrameView {
         setStatusBar(statusPanel);
     }// </editor-fold>//GEN-END:initComponents
 
+	// botao de execucao
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
         jButton1.setText("Próximo Ciclo");
@@ -958,8 +978,10 @@ public class EscalonadorDeProcessos_SO1View extends FrameView {
         nome3 = ".";
         nome4 = "..";
 
-        //Testar se precisa checar a FE
+        // testa se precisa checar a FE
+		// fila de entrada é examinada a cada 2 ciclos
         if ((exec.ciclos % 2) == 0) {
+			// e fila de entrada nao estiver vazia
             if (!exec.feVazia()) {
                 examinaFE = true;
             }

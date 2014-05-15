@@ -11,7 +11,7 @@ package escalonadordeprocessos;
 //Classe que implementa a execução dos processos
 public class Executar {
 
-    public Controle_Tamanho controle = new Controle_Tamanho(); //Controle dos recursos disponíveis
+    public ControleRecursos controle = new ControleRecursos(); //Controle dos recursos disponíveis
     int iniRecursos1;
     int iniRecursos2;
     int iniRecursos3;
@@ -50,7 +50,9 @@ public class Executar {
     //Fila de Entrada
     public Fila fe = new Fila();
     //Filas de Submissão
+	// tempo real
     public Fila ftr = new Fila();
+	// usuario
     public Fila fu = new Fila();
     //As três filas do FeedBack (Memória 1)
     public Fila fila0 = new Fila();
@@ -192,6 +194,7 @@ public class Executar {
         }
     }
 
+	
     public void executarTReal(int i) {
         if (i == 1) {
             process1.setTempRestante(process1.getTempRestante() - 1);

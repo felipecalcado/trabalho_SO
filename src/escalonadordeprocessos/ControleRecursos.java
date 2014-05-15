@@ -9,7 +9,7 @@ package escalonadordeprocessos;
  * @author CG
  */
 // Classe para controle de uso dos recursos
-public class Controle_Tamanho {
+public class ControleRecursos {
 
     static int max_memoria = 1024;  // máximo de memória - C
     static int max_impressora = 2;  // máximo de impressoras - C

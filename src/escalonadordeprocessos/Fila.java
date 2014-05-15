@@ -13,19 +13,26 @@ import java.util.LinkedList;
 
 //Classe que implementa a fila de processos do FeedBack
 public class Fila {
-    int numero; //número da lista
-    //Lista de processos da fila
+    int numeroLista;
+	
+    // lista de processos da fila
     public LinkedList<escalonadordeprocessos.Processo> lista = new LinkedList<Processo>();
 
-    //Adicionar processo à lista
+    // adiciona processo à lista
     public void adicionarProcesso(Processo p){
         lista.add(p);
     }
 
-    //Obter e remover primeiro processo da lista
+    // Obter e remover primeiro processo da lista
     public Processo removerProcesso(){
         Processo proc = new Processo();
         proc = lista.pop();
         return proc;
     }
+	
+	public String toString() {
+		
+		return lista.toString();
+		
+	}
 }

@@ -27,6 +27,19 @@ public class Processo {
     private int cpu; //Cpu Utilizada
     public int tempfim;
     public String memUsada;
+	
+	@Override
+	public String toString() {
+		
+		String resp;
+		
+		resp = "Nome: " + nome + " | Tempo de chegada: " + tempChegada + " | Prioridade: " + prioridade + " | Tempo do Processo: " + tempProcesso +
+				" | Memória: " + memoria + " | Impressora(s): " + impressora + " | Scanner(s): " + scanner + 
+				" | Modem(ns): " + modem + " | CD(s): " + cd + "\n"; 
+		
+		return resp;
+		
+	}
 
     //Métodos para a atribuição de valores às variáveis
     public void setNome(String n, int i){

@@ -14,6 +14,7 @@ public class EscalonadorDeProcessos_SO1App extends SingleFrameApplication {
 
     /**
      * At startup create and show the main frame of the application.
+	 * 
      */
     @Override protected void startup() {
         show(new EscalonadorDeProcessos_SO1View(this));
