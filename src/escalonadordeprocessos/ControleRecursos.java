@@ -11,16 +11,18 @@ package escalonadordeprocessos;
 // Classe para controle de uso dos recursos
 public class ControleRecursos {
 
-    static int max_memoria = 1024;  // máximo de memória - C
-    static int max_impressora = 2;  // máximo de impressoras - C
-    static int max_scanner = 1;     // máximo de scanners - C
-    static int max_modem = 1;       // máximo de modems - C
-    static int max_cd = 2;          // máximo de cds - C
+    static int max_memoria = 1024;  
+    static int max_impressora = 2;  
+    static int max_scanner = 1;     
+    static int max_modem = 1;       
+    static int max_cd = 2;
+	
     private int memoria = 0;
     private int impressora = 0;
     private int scanner = 0;
     private int modem = 0;
     private int cd = 0;
+	
     public int iniImpressora1 = 0;
     public int iniImpressora2 = 0;
     public int iniScanner = 0;
@@ -28,45 +30,45 @@ public class ControleRecursos {
     public int iniCD1 = 0;
     public int iniCD2 = 0;
 
-    public boolean setMemoria(Processo m) {
-        if (!(this.memoria + m.getMemoria() > max_memoria)) {
-            this.memoria += m.getMemoria();
+    public boolean setMemoria(Processo p) {
+        if (!(this.memoria + p.getMemoria() > max_memoria)) {
+            this.memoria += p.getMemoria();
             return true;
         } else {
             return false;
         }
     }
 
-    public boolean setImpressora(Processo m) {
-        if (!(this.impressora + m.getImpressora() > max_impressora)) {
-            this.impressora += m.getImpressora();
+    public boolean setImpressora(Processo p) {
+        if (!(this.impressora + p.getImpressora() > max_impressora)) {
+            this.impressora += p.getImpressora();
             return true;
         } else {
             return false;
         }
     }
 
-    public boolean setScanner(Processo m) {
-        if (!(this.scanner + m.getScanner() > max_scanner)) {
-            this.scanner += m.getScanner();
+    public boolean setScanner(Processo p) {
+        if (!(this.scanner + p.getScanner() > max_scanner)) {
+            this.scanner += p.getScanner();
             return true;
         } else {
             return false;
         }
     }
 
-    public boolean setModem(Processo m) {
-        if (!(this.modem + m.getModem() > max_modem)) {
-            this.modem += m.getModem();
+    public boolean setModem(Processo p) {
+        if (!(this.modem + p.getModem() > max_modem)) {
+            this.modem += p.getModem();
             return true;
         } else {
             return false;
         }
     }
 
-    public boolean setCD(Processo m) {
-        if (!(this.cd + m.getCD() > max_cd)) {
-            this.cd += m.getCD();
+    public boolean setCD(Processo p) {
+        if (!(this.cd + p.getCD() > max_cd)) {
+            this.cd += p.getCD();
             return true;
         } else {
             return false;
@@ -93,9 +95,9 @@ public class ControleRecursos {
         return this.cd;
     }
 
-    public boolean removerMemoria(Processo m) {
-        if (this.memoria > m.getMemoria()) {
-            this.memoria -= m.getMemoria();
+    public boolean removerMemoria(Processo p) {
+        if (this.memoria > p.getMemoria()) {
+            this.memoria -= p.getMemoria();
             return true;
         } else {
             return false;
@@ -129,14 +131,14 @@ public class ControleRecursos {
 	/**
 	 * Valida quantidade de recursos no processo
 	 * Para cada recurso, verifica se a quantidade do recurso no processo estourou limite estabelecido
-	 * @param Processo m
+	 * @param Processo p
 	 * @return boolean
 	 */
-    public boolean testarRecursos(Processo m) {
-        if (!(m.getCD() + this.cd > max_cd)) {
-            if (!(m.getImpressora() + this.impressora > max_impressora)) {
-                if (!(m.getModem() + this.modem > max_modem)) {
-                    if (!(m.getScanner() + this.scanner > max_scanner)) {
+    public boolean testarRecursos(Processo p) {
+        if (!(p.getCD() + this.cd > max_cd)) {
+            if (!(p.getImpressora() + this.impressora > max_impressora)) {
+                if (!(p.getModem() + this.modem > max_modem)) {
+                    if (!(p.getScanner() + this.scanner > max_scanner)) {
                         return true;
                     }
                 }
@@ -145,13 +147,13 @@ public class ControleRecursos {
         return false;
     }
 
-    public void addRecursos(Processo m, int i) {
-        setCD(m);
-        setImpressora(m);
-        setModem(m);
-        setScanner(m);
+    public void addRecursos(Processo p, int i) {
+        setCD(p);
+        setImpressora(p);
+        setModem(p);
+        setScanner(p);
 
-        if (m.getCD() == 1) {
+        if (p.getCD() == 1) {
             if (iniCD1 == 0) {
                 iniCD1 = i;
             } else {
@@ -159,12 +161,12 @@ public class ControleRecursos {
             }
         }
 
-        if (m.getCD() == 2) {
+        if (p.getCD() == 2) {
             iniCD1 = i;
             iniCD2 = i;
         }
 
-        if (m.getImpressora() == 1) {
+        if (p.getImpressora() == 1) {
             if (iniImpressora1 == 0) {
                 iniImpressora1 = i;
             } else {
@@ -172,21 +174,26 @@ public class ControleRecursos {
             }
         }
 
-        if (m.getImpressora() == 2) {
+        if (p.getImpressora() == 2) {
             iniImpressora1 = i;
             iniImpressora2 = i;
         }
 
-        if (m.getModem() == 1) {
+        if (p.getModem() == 1) {
             iniModem = i;
         }
 
-        if (m.getScanner() == 1) {
+        if (p.getScanner() == 1) {
             iniScanner = i;
         }
     }
 
-    public boolean usaRecursos(Processo p) {
+	/**
+	 * Verifica se o processo 'p' está utilizando algum recurso
+	 * @param p
+	 * @return 
+	 */
+	public boolean usaRecursos(Processo p) {
         if (p.getCD() > 0) {
             return true;
         } else {

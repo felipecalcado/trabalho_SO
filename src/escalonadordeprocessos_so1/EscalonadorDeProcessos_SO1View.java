@@ -1361,6 +1361,11 @@ public class EscalonadorDeProcessos_SO1View extends FrameView {
         jButton1.setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed
 
+	/**
+	 * Onclick do botão principal
+	 * Executa todo o processo de escalonamento
+	 * @param evt 
+	 */
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         if (examinaFE) {
             int ind = 0;
@@ -1425,7 +1430,7 @@ public class EscalonadorDeProcessos_SO1View extends FrameView {
             jButton3.setVisible(false);
             jButton1.setVisible(true);
 
-            //Testar se executa processo TR ou Usuário
+            // Testar se executa processo TR ou Usuário
             if ((!exec.ftrVazia())) {
                 jLabel21.setText("Desativado");
                 i = 0;

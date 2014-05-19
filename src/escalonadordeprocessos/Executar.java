@@ -37,10 +37,11 @@ public class Executar {
     private Processo aux2 = new Processo();
     private Processo aux3 = new Processo();
     private Processo aux4 = new Processo();
-    int lista1;
-    int lista2;
-    int lista3;
-    int lista4;
+	// int para representar a cpu (1..4) e a fila de feedback (valor associado, 0..2) 
+    int filaCpu1;
+    int filaCpu2;
+    int filaCpu3;
+    int filaCpu4;
     //Fila de Executando
     public Fila fExec = new Fila();
     //Fila de Suspensos
@@ -194,7 +195,7 @@ public class Executar {
         }
     }
 
-	
+	// i = cpu
     public void executarTReal(int i) {
         if (i == 1) {
             process1.setTempRestante(process1.getTempRestante() - 1);
@@ -239,26 +240,142 @@ public class Executar {
             }
         }
     }
-
-    public void atualizaFilasFB(int i) {
-        //Atualiza Filas do Feedback
+	
+	// i = cpu
+	public void executarNormal(int i) {
+        // Executar processo da Fila 0 do escalonador feedback
         if (i == 1) {
+			// verifica se a fila 0 nao esta vazia, se estiver, pula pra proxima
+            if (fila0.lista.size() > 0) {
+                filaCpu1 = 0;
+                fimFB = true;
+				// aux1 recebe o processo q esta na fila do feedback
+                aux1 = fila0.removerProcesso();
+				// comeca a contar o tempo restante
+                aux1.setTempRestante((aux1.getTempRestante() - 1));
+            } else {
+                //Executar processo da Fila 1
+                if (fila1.lista.size() > 0) {
+                    filaCpu1 = 1;
+                    fimFB = true;
+                    aux1 = fila1.removerProcesso();
+                    aux1.setTempRestante((aux1.getTempRestante() - 1));
+                } else {
+                    //Executar processo da Fila 2
+                    if (fila2.lista.size() > 0) {
+                        filaCpu1 = 2;
+                        fimFB = true;
+                        aux1 = fila2.removerProcesso();
+                        aux1.setTempRestante((aux1.getTempRestante() - 1));
+                    }
+                }
+            }
+        }
+
+        if (i == 2) {
+            if (fila0.lista.size() > 0) {
+                filaCpu2 = 0;
+                fimFB = true;
+                aux2 = fila0.removerProcesso();
+                aux2.setTempRestante((aux2.getTempRestante() - 1));
+            } else {
+                //Executar processo da Fila 1
+                if (fila1.lista.size() > 0) {
+                    filaCpu2 = 1;
+                    fimFB = true;
+                    aux2 = fila1.removerProcesso();
+                    aux2.setTempRestante((aux2.getTempRestante() - 1));
+                } else {
+                    //Executar processo fa Fila 2
+                    if (fila2.lista.size() > 0) {
+                        filaCpu2 = 2;
+                        fimFB = true;
+                        aux2 = fila2.removerProcesso();
+                        aux2.setTempRestante((aux2.getTempRestante() - 1));
+                    }
+                }
+            }
+        }
+
+        if (i == 3) {
+            if (fila00.lista.size() > 0) {
+                filaCpu3 = 0;
+                fimFB = true;
+                aux3 = fila00.removerProcesso();
+                aux3.setTempRestante((aux3.getTempRestante() - 1));
+            } else {
+                //Executar processo da Fila 1
+                if (fila01.lista.size() > 0) {
+                    filaCpu3 = 1;
+                    fimFB = true;
+                    aux3 = fila01.removerProcesso();
+                    aux3.setTempRestante((aux3.getTempRestante() - 1));
+                } else {
+                    //Executar processo fa Fila 2
+                    if (fila02.lista.size() > 0) {
+                        filaCpu3 = 2;
+                        fimFB = true;
+                        aux3 = fila02.removerProcesso();
+                        aux3.setTempRestante((aux3.getTempRestante() - 1));
+                    }
+                }
+            }
+        }
+
+        if (i == 4) {
+            if (fila00.lista.size() > 0) {
+                filaCpu4 = 0;
+                fimFB = true;
+                aux4 = fila00.removerProcesso();
+                aux4.setTempRestante((aux4.getTempRestante() - 1));
+            } else {
+                //Executar processo da Fila 1
+                if (fila01.lista.size() > 0) {
+                    filaCpu4 = 1;
+                    fimFB = true;
+                    aux4 = fila01.removerProcesso();
+                    aux4.setTempRestante((aux4.getTempRestante() - 1));
+                } else {
+                    //Executar processo fa Fila 2
+                    if (fila02.lista.size() > 0) {
+                        filaCpu4 = 2;
+                        fimFB = true;
+                        aux4 = fila02.removerProcesso();
+                        aux4.setTempRestante((aux4.getTempRestante() - 1));
+                    }
+                }
+            }
+        }
+
+    }
+
+	// Atualiza Filas do Feedback
+    public void atualizaFilasFB(int i) {
+        if (i == 1) {
+			// processo pode nao ter sido recuperado
             if (aux1 != null) {
+				// verifica se o processo ainda esta rodando
                 if (aux1.getTempRestante() != 0) {
+					// 
                     if (aux1.getTempRestante() == aux1.getTempProcesso() / 2) {
+						// verifica se o processo aux1 esta utilizando algum recurso
                         if (controle.usaRecursos(aux1)) {
+							// verifica se o processo pode receber recurso
                             if (controle.testarRecursos(aux1)) {
-                                fBloq.adicionarProcesso(aux1);
+								// adiciona os recursos ao processo aux1 no controle
                                 controle.addRecursos(aux1, ciclos);
                                 aux1.iniRecursos = ciclos;
-                            } else {
-                                fBloq.adicionarProcesso(aux1);
-                            }
-                        } else {
-                            if (lista1 == 0) {
+							}
+							// adiciona processo a fila de bloqueado
+							fBloq.adicionarProcesso(aux1);
+                        }
+						// verifica em qual fila de feedback deve entrar o processo
+						else {
+							// verifica se est
+                            if (filaCpu1 == 0) {
                                 fila1.adicionarProcesso(aux1);
                             } else {
-                                if (lista1 == 1) {
+                                if (filaCpu1 == 1) {
                                     fila2.adicionarProcesso(aux1);
                                 } else {
                                     fila0.adicionarProcesso(aux1);
@@ -266,19 +383,24 @@ public class Executar {
                             }
                         }
                     } else {
-                        if (lista1 == 0) {
+                        if (filaCpu1 == 0) {
                             fila1.adicionarProcesso(aux1);
                         } else {
-                            if (lista1 == 1) {
+                            if (filaCpu1 == 1) {
                                 fila2.adicionarProcesso(aux1);
                             } else {
                                 fila0.adicionarProcesso(aux1);
                             }
                         }
                     }
-                } else {
+                } 
+				// acabou o tempo do processo
+				else {
+					// define o tempo em q o processo acabou
                     aux1.tempfim = ciclos;
+					// adiciona na fila de processos terminados
                     ft.adicionarProcesso(aux1);
+					// se memoria usada for a memoria 1 => remove processo
                     if (aux1.memUsada.equals("Memória 1")) {
                         mem1.removerElemento(aux1);
                     }
@@ -299,10 +421,10 @@ public class Executar {
                                 fBloq.adicionarProcesso(aux2);
                             }
                         } else {
-                            if (lista2 == 0) {
+                            if (filaCpu2 == 0) {
                                 fila1.adicionarProcesso(aux2);
                             } else {
-                                if (lista2 == 1) {
+                                if (filaCpu2 == 1) {
                                     fila2.adicionarProcesso(aux2);
                                 } else {
                                     fila0.adicionarProcesso(aux2);
@@ -310,10 +432,10 @@ public class Executar {
                             }
                         }
                     } else {
-                        if (lista2 == 0) {
+                        if (filaCpu2 == 0) {
                             fila1.adicionarProcesso(aux2);
                         } else {
-                            if (lista2 == 1) {
+                            if (filaCpu2 == 1) {
                                 fila2.adicionarProcesso(aux2);
                             } else {
                                 fila0.adicionarProcesso(aux2);
@@ -344,10 +466,10 @@ public class Executar {
                                 fBloq.adicionarProcesso(aux3);
                             }
                         } else {
-                            if (lista3 == 0) {
+                            if (filaCpu3 == 0) {
                                 fila01.adicionarProcesso(aux3);
                             } else {
-                                if (lista3 == 1) {
+                                if (filaCpu3 == 1) {
                                     fila02.adicionarProcesso(aux3);
                                 } else {
                                     fila00.adicionarProcesso(aux3);
@@ -355,10 +477,10 @@ public class Executar {
                             }
                         }
                     } else {
-                        if (lista3 == 0) {
+                        if (filaCpu3 == 0) {
                             fila01.adicionarProcesso(aux3);
                         } else {
-                            if (lista3 == 1) {
+                            if (filaCpu3 == 1) {
                                 fila02.adicionarProcesso(aux3);
                             } else {
                                 fila00.adicionarProcesso(aux3);
@@ -389,10 +511,10 @@ public class Executar {
                                 fBloq.adicionarProcesso(aux4);
                             }
                         } else {
-                            if (lista4 == 0) {
+                            if (filaCpu4 == 0) {
                                 fila01.adicionarProcesso(aux4);
                             } else {
-                                if (lista4 == 1) {
+                                if (filaCpu4 == 1) {
                                     fila02.adicionarProcesso(aux4);
                                 } else {
                                     fila00.adicionarProcesso(aux4);
@@ -400,10 +522,10 @@ public class Executar {
                             }
                         }
                     } else {
-                        if (lista4 == 0) {
+                        if (filaCpu4 == 0) {
                             fila01.adicionarProcesso(aux4);
                         } else {
-                            if (lista4 == 1) {
+                            if (filaCpu4 == 1) {
                                 fila02.adicionarProcesso(aux4);
                             } else {
                                 fila00.adicionarProcesso(aux4);
@@ -469,107 +591,5 @@ public class Executar {
         }
     }
 
-    public void executarNormal(int i) {
-        //Executar processo da Fila 0
-        if (i == 1) {
-            if (fila0.lista.size() > 0) {
-                lista1 = 0;
-                fimFB = true;
-                aux1 = fila0.removerProcesso();
-                aux1.setTempRestante((aux1.getTempRestante() - 1));
-            } else {
-                //Executar processo da Fila 1
-                if (fila1.lista.size() > 0) {
-                    lista1 = 1;
-                    fimFB = true;
-                    aux1 = fila1.removerProcesso();
-                    aux1.setTempRestante((aux1.getTempRestante() - 1));
-                } else {
-                    //Executar processo fa Fila 2
-                    if (fila2.lista.size() > 0) {
-                        lista1 = 2;
-                        fimFB = true;
-                        aux1 = fila2.removerProcesso();
-                        aux1.setTempRestante((aux1.getTempRestante() - 1));
-                    }
-                }
-            }
-        }
-
-        if (i == 2) {
-            if (fila0.lista.size() > 0) {
-                lista2 = 0;
-                fimFB = true;
-                aux2 = fila0.removerProcesso();
-                aux2.setTempRestante((aux2.getTempRestante() - 1));
-            } else {
-                //Executar processo da Fila 1
-                if (fila1.lista.size() > 0) {
-                    lista2 = 1;
-                    fimFB = true;
-                    aux2 = fila1.removerProcesso();
-                    aux2.setTempRestante((aux2.getTempRestante() - 1));
-                } else {
-                    //Executar processo fa Fila 2
-                    if (fila2.lista.size() > 0) {
-                        lista2 = 2;
-                        fimFB = true;
-                        aux2 = fila2.removerProcesso();
-                        aux2.setTempRestante((aux2.getTempRestante() - 1));
-                    }
-                }
-            }
-        }
-
-        if (i == 3) {
-            if (fila00.lista.size() > 0) {
-                lista3 = 0;
-                fimFB = true;
-                aux3 = fila00.removerProcesso();
-                aux3.setTempRestante((aux3.getTempRestante() - 1));
-            } else {
-                //Executar processo da Fila 1
-                if (fila01.lista.size() > 0) {
-                    lista3 = 1;
-                    fimFB = true;
-                    aux3 = fila01.removerProcesso();
-                    aux3.setTempRestante((aux3.getTempRestante() - 1));
-                } else {
-                    //Executar processo fa Fila 2
-                    if (fila02.lista.size() > 0) {
-                        lista3 = 2;
-                        fimFB = true;
-                        aux3 = fila02.removerProcesso();
-                        aux3.setTempRestante((aux3.getTempRestante() - 1));
-                    }
-                }
-            }
-        }
-
-        if (i == 4) {
-            if (fila00.lista.size() > 0) {
-                lista4 = 0;
-                fimFB = true;
-                aux4 = fila00.removerProcesso();
-                aux4.setTempRestante((aux4.getTempRestante() - 1));
-            } else {
-                //Executar processo da Fila 1
-                if (fila01.lista.size() > 0) {
-                    lista4 = 1;
-                    fimFB = true;
-                    aux4 = fila01.removerProcesso();
-                    aux4.setTempRestante((aux4.getTempRestante() - 1));
-                } else {
-                    //Executar processo fa Fila 2
-                    if (fila02.lista.size() > 0) {
-                        lista4 = 2;
-                        fimFB = true;
-                        aux4 = fila02.removerProcesso();
-                        aux4.setTempRestante((aux4.getTempRestante() - 1));
-                    }
-                }
-            }
-        }
-
-    }
+    
 }
